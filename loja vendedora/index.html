@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronômetro Pomodoro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJw8f+6wH1k93XO6f8G2vM5wM5w5t8z5t4wv5wH5w5wQ2k5wM5w0g5wM5w5" crossorigin="anonymous">
+    
+    <style>
+        @font-face {
+            font-family: 'Roboto', sans-serif;
+            src: url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            text-align: center;
+        }
+
+        .bg-image {
+            background-image: url('images/fundo.jpg');  
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            color: white;
+        }
+
+        header {
+            padding: 50px 0;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.5); 
+            color: white;
+            border-bottom: 2px solid #ddd;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        #timer {
+            font-size: 5rem;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #ff5733; 
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+        }
+
+        button {
+            font-size: 1.2rem;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        #startBtn {
+            background-color: #28a745; 
+            color: white;
+        }
+
+        #startBtn:hover {
+            background-color: #218838; 
+        }
+
+        #resetBtn {
+            background-color: #6c757d; 
+            color: white;
+        }
+
+        #resetBtn:hover {
+            background-color: #5a6268; 
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.5rem;
+            }
+
+            header p {
+                font-size: 1rem;
+            }
+
+            #timer {
+                font-size: 4rem;
+            }
+
+            button {
+                font-size: 1rem;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            header p {
+                font-size: 0.9rem;
+            }
+
+            #timer {
+                font-size: 3.5rem;
+            }
+
+            button {
+                font-size: 0.9rem;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-image">
+
+    <header class="container py-5">
+        <h1 class="header text-white">Cronômetro Pomodoro</h1>
+        <p class="lead text-white">Trabalhe 25 minutos e faça uma pausa de 5 minutos!</p>
+    </header>
+
+    <div class="container">
+        <div id="timer" class="display-4 mb-4">25:00</div>
+        <button id="startBtn" class="btn btn-primary btn-lg">Iniciar</button>
+        <button id="resetBtn" class="btn btn-secondary btn-lg ml-2">Reiniciar</button>
+    </div>
+
+    <script>
+        let timer;
+        let isRunning = false;
+        let minutes = 25;
+        let seconds = 0;
+
+        const timerDisplay = document.getElementById('timer');
+        const startBtn = document.getElementById('startBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        function updateTimerDisplay() {
+            const minuteStr = minutes < 10 ? `0${minutes}` : minutes;
+            const secondStr = seconds < 10 ? `0${seconds}` : seconds;
+            timerDisplay.textContent = `${minuteStr}:${secondStr}`;
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                if (seconds === 0) {
+                    if (minutes === 0) {
+                        clearInterval(timer);
+                        isRunning = false;
+                        startBtn.textContent = 'Iniciar';
+                        alert('Intervalo de trabalho concluído! Hora de descansar.');
+                        minutes = 5;  
+                    } else {
+                        minutes--;
+                        seconds = 59;
+                    }
+                } else {
+                    seconds--;
+                }
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            minutes = 25;
+            seconds = 0;
+            updateTimerDisplay();
+            startBtn.textContent = 'Iniciar';
+        }
+
+        startBtn.addEventListener('click', () => {
+            if (isRunning) {
+                clearInterval(timer);
+                startBtn.textContent = 'Iniciar';
+            } else {
+                startTimer();
+                startBtn.textContent = 'Pausar';
+            }
+            isRunning = !isRunning;
+        });
+
+        resetBtn.addEventListener('click', resetTimer);
+
+        updateTimerDisplay();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybK6aPsm8il0Z7xdyzK2h0oT4kA7JYKCk7h/pdUggAm9fM36S" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0f3gN0GZLSkC3rE6aD7zUvvzC8zShRf7FvD0f37hZdK3g0J5" crossorigin="anonymous"></script>
+</body>
+</html>
